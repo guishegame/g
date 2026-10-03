@@ -4662,7 +4662,7 @@ const CloudSync={
         clearTimeout(to);
         if(r.status===404) return 0;
         const j=await r.json();
-        if(Array.isArray(j)&&j.length>0){ const rec=j[j.length-1]; if(rec&&rec.data){ let nn=0; for(const k in rec.data){ if(k.indexOf('guishe_')===0){ localStorage.setItem(k,rec.data[k]); nn++; } } return nn; } }
+        if(Array.isArray(j)&&j.length>0){ const rec=j[0]; if(rec&&rec.data){ let nn=0; for(const k in rec.data){ if(k.indexOf('guishe_')===0){ localStorage.setItem(k,rec.data[k]); nn++; } } return nn; } }
         return 0;
       }
       const r=await fetch(u+'/api/load?phone='+encodeURIComponent(phone),{signal:ac.signal});
@@ -4680,7 +4680,7 @@ const CloudSync={
     try{
       if(CloudSync.isSupabase()){
         const sb=CloudSync.supabaseInfo(); if(!sb) return false;
-        const r=await fetch(sb.base+'/rest/v1/saves',{method:'POST',headers:{'apikey':sb.key,'Authorization':'Bearer '+sb.key,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({phone:phone,data:data,updated_at:Date.now()})});
+        const r=await fetch(sb.base+'/rest/v1/saves',{method:'POST',headers:{'apikey':sb.key,'Authorization':'Bearer '+sb.key,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=minimal','on_conflict':'phone'},body:JSON.stringify({phone:phone,data:data,updated_at:Date.now()})});
         return r.status===200||r.status===201||r.status===204;
       }
       const r=await fetch(u+'/api/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:phone,data:data})}); const j=await r.json(); return !!j.ok;
